@@ -33,7 +33,29 @@ public class MainActivity extends Activity {
                 paymentButtonClicked();
             }
         });
+
+        Button refButton = (Button) findViewById(R.id.RefButton);
+        refButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refundButtonClicked();
+            }
+        });
     }
+
+    void refundButtonClicked() {
+        MposUi ui = MposUi.initialize(this, ProviderMode.MOCK,
+                "merchantIdentifier", "merchantSecretKey");
+        TransactionParameters parameters = new TransactionParameters.Builder()
+                .refund("<transactionIdentifer>")
+                // For partial refunds, specify the amount to be refunded
+                // and the currency from the original transaction
+                //.amountAndCurrency(new BigDecimal("1.00"), io.mpos.transactions.Currency.EUR)
+                .build();
+        Intent intent = ui.createTransactionIntent(parameters);
+        startActivityForResult(intent, MposUi.REQUEST_CODE_PAYMENT);
+    }
+
 
     void paymentButtonClicked() {
         MposUi ui = MposUi.initialize(this, ProviderMode.MOCK,
